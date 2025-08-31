@@ -38,7 +38,7 @@ server.all("/:endpoint", async (req, res) => {
     );
     if (!requestAdded) throw new Error("Request couldn't be added.");
 
-    res.status(200).send();
+    res.status(204).send();
   } catch (e) {
     console.error(e);
     res.status(404).send();
@@ -49,7 +49,7 @@ server.all("/:endpoint", async (req, res) => {
 server.put("/api/baskets/:endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
   if (!req.headers.host.includes("localhost")) {
-    res.status(404).send();
+    res.status(403).send("API access denied");
   }
 
   let endpoint = req.params.endpoint;
@@ -57,6 +57,71 @@ server.put("/api/baskets/:endpoint", async (req, res) => {
   try {
     let basketCleared = await pgApi.clearBasket(endpoint);
     if (!basketCleared) throw new Error("Basket couldn't be cleared.");
+
+    res.status(204).send();
+  } catch (e) {
+    console.error(e);
+    res.status(404).send();
+  }
+});
+
+// Handles requests to delete a basket
+server.delete("/api/baskets/:endpoint", async (req, res) => {
+  //Don't allow non-local requests to this endpoint
+  if (!req.headers.host.includes("localhost")) {
+    res.status(403).send("API access denied");
+  }
+
+  let endpoint = req.params.endpoint;
+
+  try {
+    let basketDeleted = await pgApi.deleteBasket(endpoint);
+    if (!basketDeleted) throw new Error("Basket couldn't be deleted.");
+
+    res.status(204).send();
+  } catch (e) {
+    console.error(e);
+    res.status(404).send();
+  }
+});
+
+// Handles requests to get all of the requests in a basket
+server.get("/api/baskets/:endpoint", async (req, res) => {
+  //Don't allow non-local requests to this endpoint
+  if (!req.headers.host.includes("localhost")) {
+    res.status(403).send("API access denied");
+  }
+
+  let endpoint = req.params.endpoint;
+
+  try {
+    let requests = await pgApi.getRequests(endpoint);
+    if (!requests) throw new Error("Requests couldn't be fetched.");
+
+    res.json(requests);
+  } catch (e) {
+    console.error(e);
+    res.status(404).send();
+  }
+});
+
+// Handles requests to create a new basket
+server.post("/api/baskets/:endpoint", async (req, res) => {
+  //Don't allow non-local requests to this endpoint
+  if (!req.headers.host.includes("localhost")) {
+    res.status(403).send("API access denied");
+  }
+
+  let endpoint = req.params.endpoint;
+
+  try {
+    let isDuplicateBasket = await pgApi.isDuplicateBasket(endpoint);
+    if (isDuplicateBasket) {
+      res.status(403).send(`Failed to create a basket. ${endpoint} already exists.`);
+    }
+
+    let newBasket = await pgApi.createBasket(endpoint);
+    if (!newBasket) throw new Error("Couldn't create basket.");
 
     res.status(204).send();
   } catch (e) {
