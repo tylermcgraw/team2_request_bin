@@ -17,7 +17,34 @@ module.exports = class PostgreSQL {
 
   // Checks if a basket exists
   async isDuplicateBasket(urlEndpoint) {
-    return this.getBasketId(urlEndpoint) !== false; 
+    return await this.getBasketId(urlEndpoint) !== false;
+  }
+
+  // Return a potential url endpoint
+  async getNewURLEndpoint() {
+    try {
+      let urlEndpoint;
+      do {
+        urlEndpoint = generateURLEndpoint();
+      }
+      while (await this.isDuplicateBasket(urlEndpoint));
+
+      return urlEndpoint;
+    } catch (e) {
+      console.error(`Couldn't create url endpoint: ${e}`);
+      return false;
+    }
+
+    function generateURLEndpoint() {
+      const CHARS = '0123456789abcdefghijklmnopqrstuvwxyz';
+      const URL_LENGTH = 7;
+      let url = '';
+      for (let idx = 0; idx < URL_LENGTH; idx += 1) {
+        let randomChar = CHARS[Math.floor(Math.random() * CHARS.length)];
+        url += randomChar;
+      }
+      return url;
+    }
   }
 
   // Creates a new basket with the specified endpoint

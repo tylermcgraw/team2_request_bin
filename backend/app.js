@@ -130,6 +130,24 @@ server.post("/api/baskets/:endpoint", async (req, res) => {
   }
 });
 
+// Handles requests to create a new url endpoint
+server.get("/api/new_url_endpoint", async (req, res) => {
+  //Don't allow non-local requests to this endpoint
+  if (!req.headers.host.includes("localhost")) {
+    res.status(403).send("API access denied");
+  }
+
+  try {
+    let newURLEndpoint = await pgApi.getNewURLEndpoint();
+    if (!newURLEndpoint) throw new Error("Couldn't generate new url endpoint.");
+
+    res.json(newURLEndpoint);
+  } catch (e) {
+    console.error(e);
+    res.status(404).send();
+  }
+});
+
 //Error handler (Last Line of Defense)
 server.use((error, req, res, _next) => {
   console.log(error);
