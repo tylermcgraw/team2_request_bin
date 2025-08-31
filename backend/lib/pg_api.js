@@ -15,14 +15,43 @@ module.exports = class PostgreSQL {
     }
   }
 
+  // Checks if a basket exists
+  async isDuplicateBasket(urlEndpoint) {
+    return this.getBasketId(urlEndpoint) !== false; 
+  }
+
   // Creates a new basket with the specified endpoint
   async createBasket(urlEndpoint) {
-    //STUB
+    try {
+      let basketId = await this.getBasketId(urlEndpoint);
+
+      let result = await pgQuery(
+        "INSERT INTO baskets (url_endpoint) VALUES ($1)",
+        basketId
+      );
+
+      return result.rowCount > 0;
+    } catch (e) {
+      console.error(`Couldn't create basket: ${e}`);
+      return false;
+    }
   }
 
   // Deletes the corresponding basket
   async deleteBasket(urlEndpoint) {
-    //STUB
+    try {
+      let basketId = await this.getBasketId(urlEndpoint);
+
+      let result = await pgQuery(
+        "DELETE FROM baskets WHERE basket_id = $1",
+        basketId
+      );
+
+      return result.rowCount > 0;
+    } catch (e) {
+      console.error(`Couldn't delete basket: ${e}`);
+      return false;
+    }
   }
 
   // Deletes all requests from the corresponding basket
@@ -33,7 +62,7 @@ module.exports = class PostgreSQL {
       let result = await pgQuery(
         "DELETE FROM requests WHERE basket_id = $1",
         basketId
-      ); //Correct query?
+      );
 
       return result.rowCount > 0;
     } catch (e) {
@@ -63,8 +92,20 @@ module.exports = class PostgreSQL {
     }
   }
 
-  // Returns an array of objects respresenting
+  // Returns an array of objects representing
   async getRequests(urlEndpoint) {
-    //STUB
+    try {
+      let basketId = await this.getBasketId(urlEndpoint);
+
+      let result = await pgQuery(
+        "SELECT (arrival_timestamp, headers, method, body) FROM requests WHERE basket_id = $1",
+        basketId
+      );
+
+      return result.rows;
+    } catch (e) {
+      console.error(`Couldn't get requests: ${e}`);
+      return false;
+    }
   }
 };
