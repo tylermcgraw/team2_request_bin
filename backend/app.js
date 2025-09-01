@@ -123,7 +123,7 @@ server.post("/api/baskets/:endpoint", async (req, res) => {
     let newBasket = await pgApi.createBasket(endpoint);
     if (!newBasket) throw new Error("Couldn't create basket.");
 
-    res.status(204).send();
+    res.status(201).send();
   } catch (e) {
     console.error(e);
     res.status(404).send();
