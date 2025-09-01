@@ -50,11 +50,9 @@ module.exports = class PostgreSQL {
   // Creates a new basket with the specified endpoint
   async createBasket(urlEndpoint) {
     try {
-      let basketId = await this.getBasketId(urlEndpoint);
-
       let result = await pgQuery(
         "INSERT INTO baskets (url_endpoint) VALUES ($1)",
-        basketId
+        urlEndpoint
       );
 
       return result.rowCount > 0;
