@@ -66,6 +66,7 @@ function App() {
           />
           <Route path=':urlEndpoint' element={<Basket setBaskets={setBaskets} />} />
         </Route>
+        <Route path='*' element={<Navigate replace to='/web' />} />
       </Routes>
     </div>
   );

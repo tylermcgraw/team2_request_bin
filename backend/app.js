@@ -20,7 +20,12 @@ server.use(morgan("dev"));
 server.use(express.text({ type: "*/*" }));
 
 // Add static middlewear to return files with static content
-server.use(express.static('dist'))
+server.use(express.static("dist"));
+
+// Handles requests for '/web'
+server.get("/web", async(req, res) => {
+  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+});
 
 //Handles any type of request to the exposed endpoint, sends request data to request table
 server.all("/:endpoint", async (req, res) => {
@@ -152,9 +157,9 @@ server.get("/api/new_url_endpoint", async (req, res) => {
   }
 });
 
-// Handler for unknown endpoints
+// Handler requests for all other/unknown endpoints
 server.use((req, res) => {
-  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
+  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
 });
 
 //Error handler (Last Line of Defense)
