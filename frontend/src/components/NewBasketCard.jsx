@@ -59,7 +59,7 @@ function NewBasketCard ({ setBaskets }) {
               className="open-btn" 
               onClick={() => {
                 closeModal();
-                if (name) navigate(`/${name}`);
+                if (name) navigate(`/web/${name}`);
               }}
             >
               Open Basket

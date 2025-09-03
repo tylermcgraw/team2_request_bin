@@ -1,5 +1,6 @@
 //Import environment variables
 const env = require("./lib/config");
+const path = require('path');
 const HOST = env.HOST;
 const PORT = env.PORT;
 
@@ -51,9 +52,9 @@ server.all("/:endpoint", async (req, res) => {
 //Handles requests to clear the basket
 server.put("/api/baskets/:endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
-  if (!req.headers.host.includes("localhost")) {
-    res.status(403).send("API access denied");
-  }
+  // if (!req.headers.host.includes("localhost")) {
+  //   res.status(403).send("API access denied");
+  // }
 
   let endpoint = req.params.endpoint;
 
@@ -71,9 +72,9 @@ server.put("/api/baskets/:endpoint", async (req, res) => {
 // Handles requests to delete a basket
 server.delete("/api/baskets/:endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
-  if (!req.headers.host.includes("localhost")) {
-    res.status(403).send("API access denied");
-  }
+  // if (!req.headers.host.includes("localhost")) {
+  //   res.status(403).send("API access denied");
+  // }
 
   let endpoint = req.params.endpoint;
 
@@ -91,9 +92,9 @@ server.delete("/api/baskets/:endpoint", async (req, res) => {
 // Handles requests to get all of the requests in a basket
 server.get("/api/baskets/:endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
-  if (!req.headers.host.includes("localhost")) {
-    res.status(403).send("API access denied");
-  }
+  // if (!req.headers.host.includes("localhost")) {
+  //   res.status(403).send("API access denied");
+  // }
 
   let endpoint = req.params.endpoint;
 
@@ -111,9 +112,9 @@ server.get("/api/baskets/:endpoint", async (req, res) => {
 // Handles requests to create a new basket
 server.post("/api/baskets/:endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
-  if (!req.headers.host.includes("localhost")) {
-    res.status(403).send("API access denied");
-  }
+  // if (!req.headers.host.includes("localhost")) {
+  //   res.status(403).send("API access denied");
+  // }
 
   let endpoint = req.params.endpoint;
 
@@ -136,9 +137,9 @@ server.post("/api/baskets/:endpoint", async (req, res) => {
 // Handles requests to create a new url endpoint
 server.get("/api/new_url_endpoint", async (req, res) => {
   //Don't allow non-local requests to this endpoint
-  if (!req.headers.host.includes("localhost")) {
-    res.status(403).send("API access denied");
-  }
+  // if (!req.headers.host.includes("localhost")) {
+  //   res.status(403).send("API access denied");
+  // }
 
   try {
     let newURLEndpoint = await pgApi.getNewURLEndpoint();
@@ -149,6 +150,11 @@ server.get("/api/new_url_endpoint", async (req, res) => {
     console.error(e);
     res.status(404).send();
   }
+});
+
+// Handler for unknown endpoints
+server.use((req, res) => {
+  res.sendFile(path.resolve(__dirname, 'dist', 'index.html'))
 });
 
 //Error handler (Last Line of Defense)

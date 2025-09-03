@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Routes, Route, Link } from "react-router-dom";
+import {
+  Routes, Route, Link, Navigate, Outlet
+} from "react-router-dom";
 import NewBasketCard from './components/NewBasketCard';
 import BasketsList from './components/BasketsList';
 import Basket from './components/Basket';
@@ -41,25 +43,29 @@ function App() {
   return (
     <div>
       <header>
-        <Link to='/'>Request Baskets</Link>
+        <Link to='/web'>Request Baskets</Link>
       </header>
     
       <Routes>
-        <Route 
-          path='/' 
-          element={
-            <main className='layout'>
-              <div className='primary'>
-                <NewBasketCard setBaskets={setBaskets} />
-              </div>
-
-              <div className='sidebar'>
-                <BasketsList baskets={baskets} />
-              </div> 
-            </main>
-          }
-        />
-        <Route path='/:urlEndpoint' element={<Basket setBaskets={setBaskets} />} />
+        <Route path='/' element={<Navigate replace to='/web' />} />
+        <Route path='/web' element={<Outlet />}>
+          <Route 
+            index
+            element={
+              <main className='layout'>
+                <div className='primary'>
+                  <NewBasketCard
+                    setBaskets={setBaskets}
+                  />
+                </div>
+                <div className='sidebar'>
+                  <BasketsList baskets={baskets} />
+                </div> 
+              </main>
+            }
+          />
+          <Route path=':urlEndpoint' element={<Basket setBaskets={setBaskets} />} />
+        </Route>
       </Routes>
     </div>
   );

@@ -7,7 +7,7 @@ export default function BasketsList({ baskets = [ ] }) {
       <ul>
         {baskets.map((name) => (
           <li key={name}>
-            <Link to={`/${name}`}>{name}</Link>
+            <Link to={`/web/${name}`}>{name}</Link>
           </li>
         ))}
       </ul>
