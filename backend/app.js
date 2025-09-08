@@ -1,6 +1,5 @@
 //Import environment variables
 const config = require("./lib/config");
-const HOST = config.HOST;
 const PORT = config.PORT;
 
 const path = require("path");
@@ -286,5 +285,5 @@ server.use((_req, res) => {
 });
 
 httpServer.listen(PORT, () => {
-  console.log(`Your server is now live on ${HOST}:${PORT}`);
+  console.log(`Your server is now live on ${PORT}`);
 });
