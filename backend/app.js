@@ -38,16 +38,17 @@ const {
 server.use(express.text({ type: "*/*" }));
 
 // Add static middlewear to return files with static content
-server.use("/web", express.static('dist')); // changed the base url where static content is served
-server.get("/web/:endpoint", async (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-server.get(/^\/web(?:\/.*)?$/, async (_req, res) => {
-  res.status(404).send("Invalid basket name");
+// Changed the base url where static content is served
+// server.use("/web", express.static('dist')); 
+// server.get("/web/:endpoint", async (req, res) => {
+  // res.sendFile(path.join(__dirname, "dist", "index.html"));
+// });
+// server.get(/^\/web(?:\/.*)?$/, async (_req, res) => {
+  // res.status(404).send("Invalid basket name");
   // Alternatively, can redirect to /web
   // res.redirect("/web");
-});
-server.get("/", (_req, res) => res.redirect("/web"));
+// });
+// server.get("/", (_req, res) => res.redirect("/web"));
 
 //Handles requests to clear the basket
 server.put("/api/baskets/:endpoint", async (req, res) => {
@@ -278,11 +279,11 @@ server.use((error, _req, res, _next) => {
 });
 
 // Handler requests for all other/unknown endpoints
-server.use((_req, res) => {
-  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
+// server.use((_req, res) => {
+  // res.sendFile(path.resolve(__dirname, "dist", "index.html"));
   // Alternatively, can redirect to /web
   // res.redirect("/web");
-});
+// });
 
 httpServer.listen(PORT, "0.0.0.0", () => {
   console.log(`Your server is now live on port ${PORT}`);

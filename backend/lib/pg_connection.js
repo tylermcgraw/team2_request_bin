@@ -1,9 +1,10 @@
 const { Client } = require("pg");
 const config = require("./config");
 const CONNECTION = {
-  user: config.PGUSER,
-  password: config.PGPASSWORD,
-  database: config.PGDATABASE,
+  host: config.PG_HOST,
+  user: config.PG_USER,
+  password: config.PG_PASSWORD,
+  database: config.PG_DATABASE,
 };
 
 function logQuery(statement, parameters) {
