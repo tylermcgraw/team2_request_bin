@@ -6,7 +6,7 @@ import { getRandomNewBasketName, createNewBasket } from "../services/services";
 
 // the "create a new basket" container on homepage
 function NewBasketCard ({ setBaskets }) {
-  const domainName = `${window.location.origin}/`;
+  const domainName = `${window.location.origin}/api/`;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [creationResult, setCreationResult] = useState(null);
   const [fieldError, setFieldError] = useState('');
