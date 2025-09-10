@@ -3,8 +3,6 @@ const config = require("./lib/config");
 const HOST = config.HOST;
 const PORT = config.PORT;
 
-const path = require("path");
-
 //Create an express server
 const express = require("express");
 const server = express();
