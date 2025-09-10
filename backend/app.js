@@ -37,18 +37,6 @@ const {
 //Add body parsing middlewear to make incoming bodies text, regardless of the type
 server.use(express.text({ type: "*/*" }));
 
-// Add static middlewear to return files with static content
-server.use("/web", express.static('dist')); // changed the base url where static content is served
-server.get("/web/:endpoint", async (req, res) => {
-  res.sendFile(path.join(__dirname, "dist", "index.html"));
-});
-server.get(/^\/web(?:\/.*)?$/, async (_req, res) => {
-  res.status(404).send("Invalid basket name");
-  // Alternatively, can redirect to /web
-  // res.redirect("/web");
-});
-server.get("/", (_req, res) => res.redirect("/web"));
-
 //Handles requests to clear the basket
 server.put("/api/baskets/:endpoint", async (req, res) => {
   let endpoint = req.params.endpoint;
@@ -275,13 +263,6 @@ server.all("/api/:endpoint", async (req, res) => {
 server.use((error, _req, res, _next) => {
   console.log(error);
   res.status(404).render("error", { error: error });
-});
-
-// Handler requests for all other/unknown endpoints
-server.use((_req, res) => {
-  res.sendFile(path.resolve(__dirname, "dist", "index.html"));
-  // Alternatively, can redirect to /web
-  // res.redirect("/web");
 });
 
 httpServer.listen(PORT, () => {
