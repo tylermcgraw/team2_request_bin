@@ -32,7 +32,7 @@ const Basket = ({ setBaskets }) => {
     getRequestsHook();
 
     if (webSocketEnabled && !webSocketReference.current) {
-      const socket = new WebSocket(`${wsProtocol}://${window.location.host}/api`);
+      const socket = new WebSocket(`${wsProtocol}://${window.location.host}/api/`);
 
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
