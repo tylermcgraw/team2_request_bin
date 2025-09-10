@@ -5,6 +5,7 @@ const CONNECTION = {
   password: config.PGPASSWORD,
   database: config.PGDATABASE,
   host: 'database-postgres.cofsigasi5ap.us-east-1.rds.amazonaws.com',
+  port: 5432,
 };
 
 function logQuery(statement, parameters) {
