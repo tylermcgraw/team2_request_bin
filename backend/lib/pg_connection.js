@@ -4,6 +4,8 @@ const CONNECTION = {
   user: config.PGUSER,
   password: config.PGPASSWORD,
   database: config.PGDATABASE,
+  host: '10.32.6.122',
+  port: 5432,
 };
 
 function logQuery(statement, parameters) {
