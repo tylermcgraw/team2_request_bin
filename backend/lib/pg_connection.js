@@ -4,8 +4,7 @@ const CONNECTION = {
   user: config.PGUSER,
   password: config.PGPASSWORD,
   database: config.PGDATABASE,
-  host: '10.32.6.122',
-  port: 5432,
+  host: 'database-postgres.cofsigasi5ap.us-east-1.rds.amazonaws.com',
 };
 
 function logQuery(statement, parameters) {
