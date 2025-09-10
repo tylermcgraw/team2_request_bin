@@ -1,5 +1,5 @@
 import axios from 'axios';
-const baseUrl = 'http://10.8.1.190:3001/api';
+const baseUrl = '/api';
 
 export const getRandomNewBasketName = async () => {
   const response = await axios.get(`${baseUrl}/new_url_endpoint`);
