@@ -50,6 +50,13 @@ server.use(express.text({ type: "*/*" }));
 // });
 // server.get("/", (_req, res) => res.redirect("/web"));
 
+// Endpoint for load balancer to check health of app
+server.get("/api/health", (_req, res) => {
+  res.status(200).json({
+    status: "healthy"
+  });
+});
+
 //Handles requests to clear the basket
 server.put("/api/baskets/:endpoint", async (req, res) => {
   let endpoint = req.params.endpoint;
