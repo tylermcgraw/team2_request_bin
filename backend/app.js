@@ -38,7 +38,7 @@ const {
 server.use(express.text({ type: "*/*" }));
 
 // Health check path
-app.get("/api/health", (req, res) => {
+server.get("/api/health", (req, res) => {
  res.status(200).json({ status: "healthy" });
 });
 
