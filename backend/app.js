@@ -1,8 +1,8 @@
 //Import environment variables
-const config = require("./lib/config");
-const PORT = config.PORT;
+// const config = require("./lib/config");
+// const PORT = config.PORT;
 
-const path = require("path");
+// const path = require("path");
 
 //Create an express server
 const express = require("express");
@@ -265,6 +265,6 @@ server.use((error, _req, res, _next) => {
   res.status(404).render("error", { error: error });
 });
 
-httpServer.listen(PORT, () => {
-  console.log(`Your server is now live on ${PORT}`);
+httpServer.listen(3001, () => {
+  console.log(`Your server is now live on 3001`);
 });
