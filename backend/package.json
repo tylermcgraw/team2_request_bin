@@ -11,6 +11,8 @@
     "start": "npx nodemon app.js"
   },
   "dependencies": {
+    "@aws-sdk/client-secrets-manager": "^3.886.0",
+    "@aws-sdk/client-ssm": "^3.886.0",
     "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "mongodb": "^6.19.0",
