@@ -64,8 +64,6 @@ async function getDbDetails() {
   }
 }
 
-const CONNECTION = await getDbDetails();
-
 // const CONNECTION = {
 //   user: config.PGUSER,
 //   password: config.PGPASSWORD,
@@ -81,7 +79,8 @@ function logQuery(statement, parameters) {
 }
 
 module.exports = async function pgQuery(statement, ...parameters) {
-  let client = new Client(CONNECTION);
+  const connection = await getDbDetails();
+  let client = new Client(connection);
 
   await client.connect();
   logQuery(statement, parameters);

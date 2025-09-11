@@ -62,12 +62,12 @@ async function getMongoConfig() {
   }
 }
 
-const client = new MongoClient(getMongoConfig());
-
 module.exports = {
   mongoInsertBody: async function (body) {
     // Inserts the specified body as a document, then returns the document Id
     try {
+      const monogoUri = await getMongoConfig();
+      const client = new MongoClient(monogoUri);
       await client.connect();
       console.log("Connected successfully to server");
       const db = client.db('request_bin');
@@ -84,6 +84,8 @@ module.exports = {
   mongoGetBody: async function (docId) {
     //Returns the body of the specified document
     try {
+      const monogoUri = await getMongoConfig();
+      const client = new MongoClient(monogoUri);
       await client.connect();
       console.log("Connected successfully to server");
       const db = client.db('request_bin');
@@ -102,6 +104,8 @@ module.exports = {
   mongoDeleteBody: async function (docId) {
     //Deletes the request with the specified document Id, returns the deletion count
     try {
+      const monogoUri = await getMongoConfig();
+      const client = new MongoClient(monogoUri);
       await client.connect();
       console.log("Connected successfully to server");
       const db = client.db('request_bin');
