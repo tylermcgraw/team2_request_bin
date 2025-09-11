@@ -9,12 +9,16 @@ const {
 
 const secret_name = "docdb-mongo-login";
 
-const secret_client = new SecretsManagerClient({
-  region: "us-east-1",
-});
+const secret_client = new SecretsManagerClient({ region: "us-east-1" });
+
+const { 
+  SSMClient, 
+  GetParametersCommand 
+} = require("@aws-sdk/client-ssm");
+
+const ssmClient = new SSMClient({ region: "us-east-1" });
 
 const { MongoClient, ObjectId } = require("mongodb");
-const config = require("./config");
 
 async function getClient() {
   let response;
@@ -38,15 +42,42 @@ async function getClient() {
   return new MongoClient(mongo_uri);
 }
 
+async function getMongoParameters() {
+  // Define the command's input
+  const input = {
+    Names: [
+      "mongo_database",
+      "mongo_collection"
+    ]
+  };
+
+  // Create and send the command
+  const command = new GetParametersCommand(input);
+
+  try {
+    const response = await ssmClient.send(command);
+    const parameters = {
+      database: response.Parameters[0].Value,
+      collection: response.Parameters[1].Value
+    }
+    
+    return parameters;
+  } catch (error) {
+    console.error("Failed to fetch parameters:", error);
+    throw error;
+  }
+};
+
 module.exports = {
   mongoInsertBody: async function (body) {
     let client = await getClient();
+    let parameters = await getMongoParameters();
     // Inserts the specified body as a document, then returns the document Id
     try {
       await client.connect();
-      console.log("Connected successfully to server");
-      const db = client.db(config.MONGO_DB_NAME);
-      const collection = db.collection("request_bodies");
+      console.log("Connected successfully to mongo db");
+      const db = client.db(parameters.database);
+      const collection = db.collection(parameters.collection);
       let result = await collection.insertOne({ body: body });
       await client.close();
 
@@ -58,12 +89,13 @@ module.exports = {
 
   mongoGetBody: async function (docId) {
     let client = await getClient();
+    let parameters = await getMongoParameters();
     //Returns the body of the specified document
     try {
       await client.connect();
-      console.log("Connected successfully to server");
-      const db = client.db(config.MONGO_DB_NAME);
-      const collection = db.collection("request_bodies");
+      console.log("Connected successfully to mongo db");
+      const db = client.db(parameters.database);
+      const collection = db.collection(parameters.collection);
 
       let result = await collection.findOne({ _id: new ObjectId(docId) });
       await client.close();
@@ -77,12 +109,13 @@ module.exports = {
 
   mongoDeleteBody: async function (docId) {
     let client = await getClient();
+    let parameters = await getMongoParameters();
     //Deletes the request with the specified document Id, returns the deletion count
     try {
       await client.connect();
-      console.log("Connected successfully to server");
-      const db = client.db(config.MONGO_DB_NAME);
-      const collection = db.collection("request_bodies");
+      console.log("Connected successfully to mongo db");
+      const db = client.db(parameters.database);
+      const collection = db.collection(parameters.collection);
 
       let result = await collection.deleteOne({ _id: new ObjectId(docId) });
       await client.close();

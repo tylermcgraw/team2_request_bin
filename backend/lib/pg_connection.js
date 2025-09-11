@@ -7,16 +7,16 @@ const {
 } = require("@aws-sdk/client-secrets-manager");
 
 const secret_name = "postgres-rds-db";
-const secret_client = new SecretsManagerClient({
-  region: "us-east-1",
-});
+const secret_client = new SecretsManagerClient({ region: "us-east-1" });
+
+const { 
+  SSMClient, 
+  GetParameterCommand 
+} = require("@aws-sdk/client-ssm");
+
+const ssmClient = new SSMClient({ region: "us-east-1" });
 
 const { Client } = require("pg");
-const config = require("./config");
-const CONNECTION = {
-  host: config.PG_HOST,
-  database: config.PG_DATABASE,
-};
 
 function logQuery(statement, parameters) {
   let timeStamp = new Date();
@@ -24,7 +24,26 @@ function logQuery(statement, parameters) {
   console.log(formattedTimeStamp, statement, parameters);
 }
 
-module.exports = async function pgQuery(statement, ...parameters) {
+async function getDatabaseName() {
+  // Define the command's input
+  const input = {
+    Name: "pg_database", // The full name of your parameter
+  };
+
+  // Create and send the command
+  const command = new GetParameterCommand(input);
+
+  try {
+    const response = await ssmClient.send(command);
+    const name = response.Parameter.Value;
+    return name;
+  } catch (error) {
+    console.error("Failed to fetch database name:", error);
+    throw error;
+  }
+};
+
+async function getSecrets() {
   let response;
 
   try {
@@ -40,11 +59,18 @@ module.exports = async function pgQuery(statement, ...parameters) {
     throw error;
   }
 
-  const secret = JSON.parse(response.SecretString);
-  CONNECTION.user = secret.username;
-  CONNECTION.password = secret.password;
+  return response.SecretString;
+}
 
-  let client = new Client(CONNECTION);
+module.exports = async function pgQuery(statement, ...parameters) {
+  const secret = JSON.parse(await getSecrets());
+
+  let client = new Client({
+    database: await getDatabaseName(),
+    user: secret.username,
+    password: secret.password,
+    host: secret.host,
+  });
 
   await client.connect();
   logQuery(statement, parameters);
