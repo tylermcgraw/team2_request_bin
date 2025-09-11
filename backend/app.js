@@ -38,6 +38,11 @@ const {
 //Add body parsing middlewear to make incoming bodies text, regardless of the type
 server.use(express.text({ type: "*/*" }));
 
+//Handles amazon ALB health checks
+server.get("/api/health", (req, res) => {
+  res.status(200).send();
+});
+
 //Handles requests to clear the basket
 server.put("/api/baskets/:endpoint", async (req, res) => {
   let endpoint = req.params.endpoint;
